@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "my-ecommerce-backend"
-        REGISTRY = "karthik449/my-ecommerce"
-        DOCKER_TAG = "${BUILD_NUMBER}" // Defined globally
+        DOCKER_IMAGE = 'my-ecommerce-backend'
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
+        REGISTRY = 'karthik449/my-ecommerce'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', credentialsId: 'Github', url: 'https://github.com/karthikeya964/ecommerce-project.git'
+                git url: 'https://github.com/karthikeya964/ecommerce-project.git', branch: 'main'
             }
         }
 
@@ -25,7 +25,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docke-hub-cred', url: '') { // Fixed credentials ID
+                    withDockerRegistry([credentialsId: 'docker-hub-cred', url: '']) {
                         sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${REGISTRY}:${DOCKER_TAG}"
                         sh "docker push ${REGISTRY}:${DOCKER_TAG}"
                     }
@@ -36,13 +36,9 @@ pipeline {
         stage('Deploy to Local Docker') {
             steps {
                 script {
-                    sh '''
-                    if [ "$(docker ps -aq -f name=ecommerce)" ]; then
-                        docker stop ecommerce
-                        docker rm ecommerce
-                    fi
-                    docker run -d -p 5000:5000 --name ecommerce ${REGISTRY}:${DOCKER_TAG}
-                    '''
+                    sh "docker stop ecommerce || true"
+                    sh "docker rm ecommerce || true"
+                    sh "docker run -d --name ecommerce -p 5000:5000 ${REGISTRY}:${DOCKER_TAG}"
                 }
             }
         }
