@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'my-ecommerce-backend'
-        DOCKER_TAG = "${env.BUILD_NUMBER}"
+        DOCKER_TAG = "${BUILD_NUMBER}"
         REGISTRY = 'karthik449/my-ecommerce'
     }
 
