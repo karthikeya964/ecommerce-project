@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git url:'https://github.com/karthikeya964/ecommerce-project.git'
+                git branch: 'main', credentialsId: 'Github',url:'https://github.com/karthikeya964/ecommerce-project.git'
             }
         }
 
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     def DOCKER_TAG = env.BUILD_NUMBER
-                    withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
+                    withDockerRegistry(credentialsId: 'docke-hub-cred', url: '') {
                         sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${REGISTRY}:${DOCKER_TAG}"
                         sh "docker push ${REGISTRY}:${DOCKER_TAG}"
                     }
