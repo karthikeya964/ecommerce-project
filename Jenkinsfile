@@ -17,7 +17,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                   sh "/usr/bin/docker build -t my-ecommerce-backend:${DOCKER_TAG} ."
+
                 }
             }
         }
